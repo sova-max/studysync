@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>StudySync Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --bg: #0b1120;
+  --card: #1e293b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-strong: #0ea5e9;
+  --radius: 12px;
+}
+
+.light-mode {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --accent: #0ea5e9;
+  --accent-strong: #0284c7;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  padding: 1rem 2rem;
+  background: var(--card);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+#main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  padding: 1.5rem;
+}
+
+.card {
+  padding: 1rem;
+  background: var(--card);
+  border-radius: var(--radius);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+/* To-Do List */
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem;
+  margin-bottom: 0.4rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius);
+}
+.task-item.done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Subjects */
+.subject-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  background: var(--accent);
+  color: #000;
+  border-radius: var(--radius);
+  margin: 0.2rem;
+}
+
+/* Calendar */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 0.2rem;
+}
+.day {
+  padding: 0.6rem;
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+}
+
+/* Glow Hover */
+.glow:hover {
+  text-shadow: 0 0 8px var(--accent);
+  color: var(--accent);
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <h1 class="glow">StudySync Dashboard</h1>
+  <button id="toggleMode">🌗 Mode</button>
+</header>
+
+<div id="main">
+
+  <!-- SUBJECT MANAGER -->
+  <div class="card">
+    <h2>Subjects</h2>
+    <input id="subjectInput" placeholder="Add subject…" style="width: 70%; padding: 6px;">
+    <button onclick="addSubject()">Add</button>
+    <div id="subjectList"></div>
+  </div>
+
+  <!-- STUDY TIME TRACKER -->
+  <div class="card">
+    <h2>Total Study Time</h2>
+    <p><strong id="studyMinutes">0</strong> minutes logged</p>
+    <button onclick="addPomodoro()">Add Pomodoro +25m</button>
+  </div>
+
+  <!-- TODO LIST -->
+  <div class="card" style="grid-column: span 2;">
+    <h2>Task Manager</h2>
+    <input id="taskInput" placeholder="New task…" style="width: 50%; padding: 6px;">
+    <select id="subjectSelect"></select>
+    <button onclick="addTask()">Add Task</button>
+
+    <div id="taskList"></div>
+  </div>
+
+  <!-- MINI CALENDAR -->
+  <div class="card" style="grid-column: span 2;">
+    <h2>Calendar</h2>
+    <div id="calendar" class="calendar"></div>
+  </div>
+
+</div>
+
+<script>
+/* -------------------------
+   DARK / LIGHT MODE
+------------------------- */
+document.getElementById("toggleMode").onclick = () => {
+  document.body.classList.toggle("light-mode");
+  localStorage.setItem("mode", document.body.classList.contains("light-mode"));
+};
+if (localStorage.getItem("mode") === "true") {
+  document.body.classList.add("light-mode");
+}
+
+/* -------------------------
+   SUBJECT MANAGER
+------------------------- */
+let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
+
+function renderSubjects() {
+  const list = document.getElementById("subjectList");
+  const select = document.getElementById("subjectSelect");
+
+  list.innerHTML = "";
+  select.innerHTML = "";
+
+  subjects.forEach((sub, i) => {
+    list.innerHTML += `<span class="subject-badge">${sub}</span>`;
+    select.innerHTML += `<option value="${sub}">${sub}</option>`;
+  });
+
+  localStorage.setItem("subjects", JSON.stringify(subjects));
+}
+
+function addSubject() {
+  const val = document.getElementById("subjectInput").value.trim();
+  if (!val) return;
+  subjects.push(val);
+  document.getElementById("subjectInput").value = "";
+  renderSubjects();
+}
+
+renderSubjects();
+
+/* -------------------------
+   TO-DO LIST
+------------------------- */
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+function renderTasks() {
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
+
+  tasks.forEach((t, i) => {
+    list.innerHTML += `
+      <div class="task-item ${t.done ? "done" : ""}">
+        <span>
+          <strong>[${t.subject}]</strong> ${t.text}
+        </span>
+        <div>
+          <button onclick="toggleTask(${i})">✓</button>
+          <button onclick="deleteTask(${i})">✗</button>
+        </div>
+      </div>
+    `;
+  });
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function addTask() {
+  const text = document.getElementById("taskInput").value.trim();
+  const subject = document.getElementById("subjectSelect").value;
+
+  if (!text || !subject) return;
+
+  tasks.push({ text, subject, done: false });
+  document.getElementById("taskInput").value = "";
+  renderTasks();
+}
+
+function toggleTask(i) {
+  tasks[i].done = !tasks[i].done;
+  renderTasks();
+}
+
+function deleteTask(i) {
+  tasks.splice(i, 1);
+  renderTasks();
+}
+
+renderTasks();
+
+/* -------------------------
+   STUDY TIME TRACKER
+------------------------- */
+let minutes = Number(localStorage.getItem("studyTime") || 0);
+
+function renderStudyTime() {
+  document.getElementById("studyMinutes").innerText = minutes;
+}
+
+function addPomodoro() {
+  minutes += 25;
+  localStorage.setItem("studyTime", minutes);
+  renderStudyTime();
+}
+
+renderStudyTime();
+
+/* -------------------------
+   MINI CALENDAR
+------------------------- */
+function renderCalendar() {
+  const cal = document.getElementById("calendar");
+  cal.innerHTML = "";
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  const days = new Date(year, month + 1, 0).getDate();
+
+  for (let d = 1; d <= days; d++) {
+    cal.innerHTML += `<div class="day">${d}</div>`;
+  }
+}
+
+renderCalendar();
+</script>
+
+</body>
+</html>

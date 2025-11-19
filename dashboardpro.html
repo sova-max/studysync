@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StudySync Pro Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+<style>
+/* CSS WILL COME IN NEXT MESSAGE – paste it inside this <style> block */
+/* ---------------------------------------
+   GLOBAL RESET & BASE STYLE
+---------------------------------------- */
+* {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f7;
+  color: #1c1c1e;
+  transition: background .3s, color .3s;
+}
+
+.dark {
+  background: #1c1c1e;
+  color: #f5f5f7;
+}
+
+/* ---------------------------------------
+   TOP BAR
+---------------------------------------- */
+.topbar {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.dark .topbar {
+  background: rgba(40,40,40,0.6);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 18px rgba(255,255,255,0.05);
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.mode-toggle {
+  font-size: 1.3rem;
+  padding: 0.4rem .8rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: #e5e5ea;
+}
+
+.dark .mode-toggle {
+  background: #38383a;
+  color: #fff;
+}
+
+/* ---------------------------------------
+   LAYOUT GRID
+---------------------------------------- */
+.container {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.full {
+  grid-column: span 2;
+}
+
+/* ---------------------------------------
+   CARD (APPLE SOFT SHADOW STYLE)
+---------------------------------------- */
+.card {
+  background: #ffffff;
+  padding: 1.2rem 1.4rem;
+  border-radius: 22px;
+  box-shadow:
+    0px 4px 12px rgba(0,0,0,0.05),
+    0px 12px 28px rgba(0,0,0,0.08);
+  transition: transform .2s, box-shadow .2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0px 8px 16px rgba(0,0,0,0.06),
+    0px 16px 28px rgba(0,0,0,0.1);
+}
+
+.dark .card {
+  background: #2c2c2e;
+  box-shadow:
+    0px 4px 10px rgba(255,255,255,0.04),
+    0px 10px 20px rgba(255,255,255,0.03);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+/* ---------------------------------------
+   INPUT ROWS
+---------------------------------------- */
+.input-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: .9rem;
+  flex-wrap: wrap;
+}
+
+input, select {
+  padding: 0.6rem;
+  border-radius: 12px;
+  border: 1px solid #d1d1d6;
+  flex: 1;
+  font-size: .9rem;
+}
+
+.dark input,
+.dark select {
+  background: #3a3a3c;
+  border-color: #5a5a5c;
+  color: #fff;
+}
+
+button {
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  background: #007aff;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #0a84ff;
+}
+
+.apple-btn {
+  width: 100%;
+  margin-top: .8rem;
+}
+
+/* ---------------------------------------
+   SUBJECT TAGS
+---------------------------------------- */
+.subject-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+}
+
+.subject-badge {
+  padding: .4rem .8rem;
+  border-radius: 10px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+/* ---------------------------------------
+   TASK LIST
+---------------------------------------- */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.task {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafafa;
+  padding: .7rem 1rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border-left: 6px solid #007aff22;
+  cursor: grab;
+  transition: 0.15s;
+}
+
+.task:active {
+  cursor: grabbing;
+}
+
+.dark .task {
+  background: #3a3a3c;
+  border-left-color: #0a84ff44;
+}
+
+.task-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.task-meta {
+  font-size: .8rem;
+  color: #666;
+}
+
+.dark .task-meta {
+  color: #ccc;
+}
+
+/* PRIORITY COLORS */
+.priority-low { color: #34c759; }
+.priority-medium { color: #ff9500; }
+.priority-high { color: #ff3b30; }
+
+/* DONE tasks */
+.done {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.task button {
+  background: transparent;
+  color: #007aff;
+}
+
+.dark .task button {
+  color: #0a84ff;
+}
+
+/* ---------------------------------------
+   CALENDAR
+---------------------------------------- */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+.calendar div {
+  background: #fff;
+  padding: .8rem 0;
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-weight: 500;
+}
+
+.dark .calendar div {
+  background: #3a3a3c;
+}
+
+.deadline-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff3b30;
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ---------------------------------------
+   PROGRESS RING
+---------------------------------------- */
+.progress-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: auto;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  fill: none;
+  stroke: #e5e5ea;
+  stroke-width: 12;
+}
+
+.dark .ring-bg {
+  stroke: #3a3a3c;
+}
+
+.ring-fg {
+  fill: none;
+  stroke: #007aff;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-dasharray: 377;
+  stroke-dashoffset: 377;
+  transition: stroke-dashoffset .5s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* ---------------------------------------
+   WEEKLY CHART
+---------------------------------------- */
+canvas {
+  margin-top: 1rem;
+  width: 100%;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+.dark canvas {
+  background: #2c2c2e;
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="title">StudySync Pro</div>
+  <button id="modeToggle" class="mode-toggle">🌗</button>
+</header>
+
+<div class="container">
+
+  <!-- SUBJECTS -->
+  <section class="card">
+    <h2>Subjects</h2>
+    <div class="input-row">
+      <input id="subjectInput" placeholder="Add new subject…" />
+      <button onclick="addSubject()">Add</button>
+    </div>
+    <div id="subjectList" class="subject-list"></div>
+  </section>
+
+  <!-- DAILY STUDY PROGRESS RING -->
+  <section class="card">
+    <h2>Daily Study Progress</h2>
+    <div class="progress-wrapper">
+      <svg class="progress-ring" width="140" height="140">
+        <circle class="ring-bg" cx="70" cy="70" r="60" />
+        <circle class="ring-fg" cx="70" cy="70" r="60" />
+      </svg>
+      <div class="progress-text"><span id="dailyMinutes">0</span>m</div>
+    </div>
+    <button onclick="addPomodoro()" class="apple-btn">+ Add 25 min</button>
+  </section>
+
+  <!-- TASK MANAGER -->
+  <section class="card full">
+    <h2>Task Manager</h2>
+
+    <div class="input-row">
+      <input id="taskInput" placeholder="New task…" />
+
+      <select id="taskSubject"></select>
+
+      <select id="taskPriority">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+
+      <input id="taskDeadline" type="date" />
+
+      <button onclick="addTask()">Add</button>
+    </div>
+
+    <div id="taskList" class="task-list"></div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section class="card full">
+    <h2>Calendar</h2>
+    <div id="calendar" class="calendar"></div>
+    <div id="calendarLegend" class="calendar-legend"></div>
+  </section>
+
+  <!-- WEEKLY CHART -->
+  <section class="card full">
+    <h2>Weekly Study Analytics</h2>
+    <canvas id="weeklyChart" width="800" height="300"></canvas>
+  </section>
+
+</div>
+
+<script>
+/* JS WILL COME IN NEXT MESSAGE – paste it inside this <script> block */
+/* ----------------------------------------------------------
+   DARK / LIGHT MODE
+----------------------------------------------------------- */
+const modeBtn = document.getElementById("modeToggle");
+
+if (localStorage.getItem("proMode") === "dark") {
+    document.body.classList.add("dark");
+}
+
+modeBtn.onclick = () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem(
+        "proMode",
+        document.body.classList.contains("dark") ? "dark" : "light"
+    );
+};
+
+/* ----------------------------------------------------------
+   GLOBAL DATA STORAGE
+----------------------------------------------------------- */
+let subjects = JSON.parse(localStorage.getItem("proSubjects") || "[]");
+let tasks = JSON.parse(localStorage.getItem("proTasks") || "[]");
+let study = JSON.parse(localStorage.getItem("proStudy") || '{"daily":0,"week":[0,0,0,0,0,0,0]}');
+
+/* ----------------------------------------------------------
+   SUBJECT COLORS (auto-generated)
+----------------------------------------------------------- */
+function randomColor() {
+    const colors = ["#FF3B30", "#FF9500", "#FFCC00", "#34C759", "#5AC8FA", "#007AFF", "#AF52DE"];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+/* ----------------------------------------------------------
+   RENDER SUBJECTS
+----------------------------------------------------------- */
+function renderSubjects() {
+    const list = document.getElementById("subjectList");
+    const taskDropdown = document.getElementById("taskSubject");
+
+    list.innerHTML = "";
+    taskDropdown.innerHTML = "";
+
+    subjects.forEach(sub => {
+        list.innerHTML += `
+            <span class="subject-badge" style="background:${sub.color}">
+                ${sub.name}
+            </span>
+        `;
+        taskDropdown.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+    });
+
+    localStorage.setItem("proSubjects", JSON.stringify(subjects));
+}
+
+function addSubject() {
+    const input = document.getElementById("subjectInput");
+    const name = input.value.trim();
+    if (!name) return;
+
+    subjects.push({ name, color: randomColor() });
+    input.value = "";
+    renderSubjects();
+}
+
+renderSubjects();
+
+/* ----------------------------------------------------------
+   ADD TASK
+----------------------------------------------------------- */
+function addTask() {
+    const text = document.getElementById("taskInput").value.trim();
+    const subject = document.getElementById("taskSubject").value;
+    const priority = document.getElementById("taskPriority").value;
+    const deadline = document.getElementById("taskDeadline").value;
+
+    if (!text) return;
+
+    tasks.push({
+        id: Date.now(),
+        text,
+        subject,
+        priority,
+        deadline,
+        done: false
+    });
+
+    document.getElementById("taskInput").value = "";
+    renderTasks();
+    renderCalendar();
+}
+
+/* ----------------------------------------------------------
+   RENDER TASKS (with drag & drop)
+----------------------------------------------------------- */
+function renderTasks() {
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    tasks.forEach((t, index) => {
+        list.innerHTML += `
+        <div class="task" draggable="true" data-index="${index}">
+            <div class="task-left">
+                <div class="task-title ${t.done ? "done" : ""}">${t.text}</div>
+                <div class="task-meta">
+                    <strong style="color:${getSubjectColor(t.subject)}">${t.subject}</strong> • 
+                    <span class="priority-${t.priority}">${t.priority}</span> • 
+                    <span>${t.deadline || "No deadline"}</span>
+                </div>
+            </div>
+            <div>
+                <button onclick="toggleTask(${index})">✓</button>
+                <button onclick="deleteTask(${index})">✗</button>
+            </div>
+        </div>
+        `;
+    });
+
+    enableDragAndDrop();
+    localStorage.setItem("proTasks", JSON.stringify(tasks));
+}
+
+function getSubjectColor(subjectName) {
+    const sub = subjects.find(s => s.name === subjectName);
+    return sub ? sub.color : "#999";
+}
+
+function toggleTask(i) {
+    tasks[i].done = !tasks[i].done;
+    renderTasks();
+}
+
+function deleteTask(i) {
+    tasks.splice(i, 1);
+    renderTasks();
+    renderCalendar();
+}
+
+renderTasks();
+
+/* ----------------------------------------------------------
+   DRAG & DROP TASK REORDERING
+----------------------------------------------------------- */
+function enableDragAndDrop() {
+    const taskItems = document.querySelectorAll(".task");
+
+    let dragged;
+
+    taskItems.forEach(item => {
+        item.addEventListener("dragstart", () => {
+            dragged = item;
+            item.style.opacity = ".5";
+        });
+
+        item.addEventListener("dragend", () => {
+            item.style.opacity = "1";
+        });
+
+        item.addEventListener("dragover", e => {
+            e.preventDefault();
+            const container = item.parentNode;
+            const draggingIndex = +dragged.dataset.index;
+            const currentIndex = +item.dataset.index;
+
+            if (draggingIndex < currentIndex) {
+                container.insertBefore(dragged, item.nextSibling);
+            } else {
+                container.insertBefore(dragged, item);
+            }
+        });
+
+        item.addEventListener("drop", () => {
+            const newOrder = [];
+            document.querySelectorAll(".task").forEach(node => {
+                newOrder.push(tasks[node.dataset.index]);
+            });
+            tasks = newOrder;
+            renderTasks();
+        });
+    });
+}
+
+/* ----------------------------------------------------------
+   PROGRESS RING
+----------------------------------------------------------- */
+const ring = document.querySelector(".ring-fg");
+const fullDash = 377;
+
+function updateProgressRing() {
+    const max = 120; // 2 hrs target
+    const percent = Math.min(study.daily / max, 1);
+    ring.style.strokeDashoffset = fullDash - fullDash * percent;
+
+    document.getElementById("dailyMinutes").innerText = study.daily;
+}
+
+/* ADD POMODORO */
+function addPomodoro() {
+    study.daily += 25;
+
+    // update weekly
+    const day = new Date().getDay();
+    study.week[day] += 25;
+
+    localStorage.setItem("proStudy", JSON.stringify(study));
+
+    updateProgressRing();
+    drawChart();
+}
+
+updateProgressRing();
+
+/* ----------------------------------------------------------
+   CALENDAR RENDER WITH DEADLINE DOTS
+----------------------------------------------------------- */
+function renderCalendar() {
+    const cal = document.getElementById("calendar");
+    cal.innerHTML = "";
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+        const hasDeadline = tasks.some(t => t.deadline === dateStr);
+
+        cal.innerHTML += `
+            <div>
+                ${d}
+                ${hasDeadline ? `<div class="deadline-dot"></div>` : ""}
+            </div>
+        `;
+    }
+}
+
+renderCalendar();
+
+/* ----------------------------------------------------------
+   WEEKLY CHART (PURE JS CANVAS)
+----------------------------------------------------------- */
+const canvas = document.getElementById("weeklyChart");
+const ctx = canvas.getContext("2d");
+
+function drawChart() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const barWidth = 80;
+    const gap = 40;
+    const baseY = 260;
+
+    const max = Math.max(...study.week, 60);
+
+    study.week.forEach((min, i) => {
+        const height = (min / max) * 200;
+
+        // bar
+        ctx.fillStyle = "#007aff";
+        ctx.fillRect(60 + i * (barWidth + gap), baseY - height, barWidth, height);
+
+        // label
+        ctx.fillStyle = "gray";
+        ctx.font = "16px Inter";
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        ctx.fillText(days[i], 70 + i * (barWidth + gap), baseY + 30);
+
+        // value
+        ctx.fillStyle = "#000";
+        ctx.fillText(min + "m", 70 + i * (barWidth + gap), baseY - height - 10);
+    });
+}
+
+drawChart();
+
+</script>
+
+</body>
+</html>

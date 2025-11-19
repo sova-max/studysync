@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync – Smart Study Organizer for Students</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #020617;
+        --bg-soft: #0b1120;
+        --bg-section: #020617;
+        --accent: #38bdf8;
+        --accent-strong: #0ea5e9;
+        --accent-soft: rgba(56, 189, 248, 0.12);
+        --accent-green: #22c55e;
+        --text-main: #e5e7eb;
+        --text-muted: #9ca3af;
+        --border-subtle: rgba(148, 163, 184, 0.4);
+        --radius-lg: 18px;
+        --radius-pill: 999px;
+        --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.85);
+        --max-width: 1080px;
+        --transition-fast: 180ms ease-out;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background: radial-gradient(
+          circle at top,
+          #0b1120 0,
+          #020617 45%,
+          #020617 100%
+        );
+        color: var(--text-main);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      /* Layout */
+      .page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .shell {
+        width: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 1.25rem 1.5rem 4rem;
+      }
+
+      /* Top nav */
+      .top-bar-wrap {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        backdrop-filter: blur(18px);
+        background: linear-gradient(
+          to bottom,
+          rgba(15, 23, 42, 0.95),
+          transparent
+        );
+        border-bottom: 1px solid rgba(30, 64, 175, 0.35);
+      }
+
+      .top-bar {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0.8rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+
+      .brand-avatar {
+        width: 2.3rem;
+        height: 2.3rem;
+        border-radius: 0.9rem;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: radial-gradient(
+          circle at 30% 0,
+          #38bdf8,
+          #0f172a 60%,
+          #020617 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        box-shadow: 0 12px 22px rgba(15, 23, 42, 0.85);
+      }
+
+      .brand-text-main {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .brand-text-sub {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .nav-links {
+        display: none;
+        gap: 0.35rem;
+      }
+
+      .nav-link {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.7rem;
+        border-radius: var(--radius-pill);
+        color: var(--text-muted);
+        border: 1px solid transparent;
+        transition: all var(--transition-fast);
+      }
+
+      .nav-link:hover {
+        color: var(--text-main);
+        border-color: rgba(148, 163, 184, 0.6);
+        background: rgba(15, 23, 42, 0.95);
+      }
+
+      .nav-cta {
+        padding: 0.45rem 0.95rem;
+        border-radius: var(--radius-pill);
+        border: 1px solid rgba(56, 189, 248, 0.7);
+        background: linear-gradient(
+          120deg,
+          rgba(56, 189, 248, 0.18),
+          rgba(14, 165, 233, 0.06)
+        );
+        font-size: 0.8rem;
+        font-weight: 500;
+        box-shadow: 0 14px 30px rgba(8, 47, 73, 0.6);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        cursor: pointer;
+        transition: transform var(--transition-fast),
+          box-shadow var(--transition-fast), background var(--transition-fast);
+      }
+
+      .nav-cta span {
+        font-size: 1rem;
+      }
+
+      .nav-cta:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 40px rgba(8, 47, 73, 0.9);
+        background: linear-gradient(
+          120deg,
+          rgba(56, 189, 248, 0.26),
+          rgba(14, 165, 233, 0.12)
+        );
+      }
+
+      /* Hero */
+      .hero {
+        padding-top: 2.5rem;
+        display: grid;
+        gap: 2.4rem;
+      }
+
+      .hero-main {
+        display: flex;
+        flex-direction: column;
+        gap: 1.8rem;
+      }
+
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.35rem 0.7rem 0.35rem 0.35rem;
+        border-radius: 999px;
+        border: 1px solid rgba(56, 189, 248, 0.7);
+        background: rgba(15, 23, 42, 0.98);
+        box-shadow: 0 12px 20px rgba(15, 23, 42, 0.9);
+      }
+
+      .hero-dot {
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 999px;
+        background: radial-gradient(
+          circle at 30% 0,
+          #22c55e,
+          #0ea5e9 60%,
+          #020617 100%
+        );
+        box-shadow: 0 0 22px rgba(56, 189, 248, 0.9);
+      }
+
+      .hero-tag-text {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--text-muted);
+      }
+
+      .hero-title {
+        font-size: clamp(2.1rem, 4vw, 2.8rem);
+        font-weight: 700;
+        letter-spacing: -0.05em;
+      }
+
+      .hero-title span {
+        background: linear-gradient(135deg, #38bdf8, #22c55e);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero-subtitle {
+        max-width: 32rem;
+        font-size: 0.98rem;
+        color: var(--text-muted);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+      }
+
+      .btn {
+        border-radius: var(--radius-pill);
+        padding: 0.75rem 1.35rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all var(--transition-fast);
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--accent),
+          var(--accent-strong)
+        );
+        color: #0b1120;
+        box-shadow: 0 18px 40px rgba(8, 47, 73, 0.9);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 22px 50px rgba(8, 47, 73, 1);
+      }
+
+      .btn-ghost {
+        background: rgba(15, 23, 42, 0.95);
+        border-color: rgba(148, 163, 184, 0.6);
+        color: var(--text-muted);
+      }
+
+      .btn-ghost:hover {
+        color: var(--text-main);
+        border-color: rgba(148, 163, 184, 0.9);
+        background: rgba(15, 23, 42, 1);
+      }
+
+      .hero-metadata {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      .pill {
+        border-radius: 999px;
+        padding: 0.25rem 0.65rem;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        background: rgba(15, 23, 42, 0.95);
+      }
+
+      .pill-dot {
+        width: 0.35rem;
+        height: 0.35rem;
+        border-radius: 999px;
+        background: var(--accent-green);
+        box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+      }
+
+      /* Hero mockup card */
+      .hero-card {
+        border-radius: 1.4rem;
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        background: radial-gradient(
+            circle at top left,
+            rgba(56, 189, 248, 0.13),
+            transparent 60%
+          ),
+          linear-gradient(
+            to bottom right,
+            rgba(15, 23, 42, 0.98),
+            rgba(15, 23, 42, 0.97)
+          );
+        padding: 1.3rem;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-card-badge {
+        position: absolute;
+        top: 1.05rem;
+        right: 1.05rem;
+        font-size: 0.7rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        background: rgba(15, 23, 42, 0.95);
+        color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .hero-card-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .hero-card-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .hero-card-subtitle {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      .hero-card-tag {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(56, 189, 248, 0.7);
+        background: rgba(15, 23, 42, 0.95);
+      }
+
+      .hero-card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+        margin-top: 0.3rem;
+      }
+
+      .hero-metric {
+        padding: 0.7rem 0.8rem;
+        border-radius: 0.9rem;
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        background: rgba(15, 23, 42, 0.98);
+        font-size: 0.75rem;
+      }
+
+      .hero-metric-label {
+        color: var(--text-muted);
+        margin-bottom: 0.2rem;
+      }
+
+      .hero-metric-value {
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .hero-card-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        align-items: center;
+        margin-top: 0.4rem;
+      }
+
+      .stack-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+
+      .stack-chips span {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.55rem;
+        border-radius: 999px;
+        border: 1px dashed rgba(148, 163, 184, 0.7);
+        background: rgba(15, 23, 42, 0.95);
+        color: var(--text-muted);
+      }
+
+      .hero-card-note {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+      }
+
+      /* Section basics */
+      section {
+        margin-top: 3.5rem;
+      }
+
+      .section-header {
+        margin-bottom: 1.6rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 1rem;
+      }
+
+      .section-kicker {
+        font-size: 0.78rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 0.35rem;
+      }
+
+      .section-title {
+        font-size: 1.15rem;
+        font-weight: 600;
+      }
+
+      .section-subtext {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        max-width: 24rem;
+      }
+
+      /* Grids & cards */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.1rem;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.1rem;
+      }
+
+      .card {
+        padding: 1.1rem;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-subtle);
+        background: rgba(15, 23, 42, 0.98);
+        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.85);
+        transition: transform var(--transition-fast),
+          box-shadow var(--transition-fast), border-color var(--transition-fast),
+          background var(--transition-fast);
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(56, 189, 248, 0.7);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.97);
+        background: linear-gradient(
+          to bottom right,
+          rgba(15, 23, 42, 0.98),
+          rgba(8, 47, 73, 0.98)
+        );
+      }
+
+      .card-label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--text-muted);
+        margin-bottom: 0.3rem;
+      }
+
+      .card-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      .card-body {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 0.6rem;
+      }
+
+      .card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.76rem;
+        color: var(--text-muted);
+      }
+
+      .badge-soft {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(56, 189, 248, 0.6);
+        color: #e0f2fe;
+      }
+
+      /* Problem / solution */
+      .problem-solution {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr);
+        gap: 1rem;
+      }
+
+      .problem-list {
+        list-style: none;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .problem-list li::before {
+        content: "•";
+        margin-right: 0.4rem;
+        color: #f97316;
+      }
+
+      /* Features */
+      .feature-icon {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.9rem;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(56, 189, 248, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      /* How it works */
+      .steps {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.9rem;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.7rem;
+        align-items: flex-start;
+      }
+
+      .step-number {
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(56, 189, 248, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 600;
+        background: rgba(15, 23, 42, 0.98);
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+      }
+
+      .step-content-title {
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .step-content-body {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+
+      /* Pricing */
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+      }
+
+      .price {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+
+      .price span {
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: var(--text-muted);
+      }
+
+      .price-list {
+        list-style: none;
+        font-size: 0.84rem;
+        color: var(--text-muted);
+        display: grid;
+        gap: 0.4rem;
+        margin: 0.6rem 0 0.9rem;
+      }
+
+      .price-list li::before {
+        content: "✓";
+        margin-right: 0.4rem;
+        color: var(--accent-green);
+        font-weight: 600;
+      }
+
+      /* Testimonials */
+      .testimonial-name {
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .testimonial-role {
+        font-size: 0.76rem;
+        color: var(--text-muted);
+      }
+
+      /* FAQ */
+      .faq-list {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.9rem;
+      }
+
+      .faq-item {
+        border-radius: 1rem;
+        border: 1px solid rgba(30, 64, 175, 0.6);
+        background: rgba(15, 23, 42, 0.96);
+        padding: 0.9rem 1rem;
+      }
+
+      .faq-q {
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .faq-a {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      /* Contact */
+      .contact {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .contact-card {
+        border-radius: 1.1rem;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: radial-gradient(
+          circle at top left,
+          rgba(56, 189, 248, 0.18),
+          rgba(15, 23, 42, 0.98)
+        );
+        padding: 1.2rem 1.1rem 1.1rem;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .contact-grid {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .input-label {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      .input-field,
+      .input-textarea {
+        border-radius: 0.75rem;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: rgba(15, 23, 42, 0.98);
+        padding: 0.6rem 0.75rem;
+        font-size: 0.86rem;
+        color: var(--text-main);
+        outline: none;
+        transition: border-color var(--transition-fast),
+          box-shadow var(--transition-fast), background var(--transition-fast);
+        resize: vertical;
+        min-height: 2.5rem;
+      }
+
+      .input-field:focus,
+      .input-textarea:focus {
+        border-color: rgba(56, 189, 248, 0.95);
+        box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
+        background: rgba(15, 23, 42, 1);
+      }
+
+      .input-helper {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+      }
+
+      .contact-footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.7rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .contact-footer a {
+        color: #e0f2fe;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+      }
+
+      /* Final CTA */
+      .cta {
+        border-radius: 1.3rem;
+        border: 1px solid rgba(56, 189, 248, 0.5);
+        background: linear-gradient(
+          135deg,
+          rgba(56, 189, 248, 0.22),
+          rgba(14, 165, 233, 0.06)
+        );
+        padding: 1.4rem 1.3rem;
+        box-shadow: var(--shadow-soft);
+        text-align: center;
+      }
+
+      .cta h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .cta p {
+        font-size: 0.86rem;
+        color: var(--text-muted);
+        margin-bottom: 0.9rem;
+      }
+
+      /* Footer */
+      .footer {
+        border-top: 1px solid rgba(15, 23, 42, 1);
+        padding-top: 1.6rem;
+        margin-top: 2.8rem;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+      }
+
+      .footer-links a:hover {
+        color: var(--text-main);
+      }
+      /* Pomodoro timer */
+.pomodoro-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pomodoro-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.pomodoro-mode-toggle {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.pomodoro-mode-btn {
+  padding-inline: 0.85rem;
+  font-size: 0.82rem;
+}
+
+.pomodoro-mode-btn.active {
+  border-color: rgba(56, 189, 248, 0.9);
+  background: rgba(15, 23, 42, 1);
+  color: var(--text-main);
+}
+
+.pomodoro-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.pomodoro-display {
+  font-size: 2.4rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.pomodoro-separator {
+  padding-inline: 0.15rem;
+}
+
+.pomodoro-status {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.pomodoro-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.pomodoro-helper {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+/* Animated tomato icon */
+.pomo-icon {
+  font-size: 1.5rem;
+  margin-right: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: tomatoPulse 1.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Pulse + slight bounce animation */
+@keyframes tomatoPulse {
+  0% {
+    transform: scale(1) translateY(0);
+    text-shadow: 0 0 0 rgba(248, 113, 113, 0.0);
+  }
+  20% {
+    transform: scale(1.08) translateY(-1px);
+    text-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
+  }
+  50% {
+    transform: scale(1.12) translateY(-2px);
+    text-shadow: 0 0 14px rgba(248, 113, 113, 0.8);
+  }
+  80% {
+    transform: scale(1.05) translateY(-1px);
+    text-shadow: 0 0 8px rgba(248, 113, 113, 0.4);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    text-shadow: 0 0 0 rgba(248, 113, 113, 0.0);
+  }
+}
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;   /* optional: makes it rounded like original */
+  object-fit: cover;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+/* Hover glow for logo */
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 4px 10px rgba(56, 189, 248, 0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.brand-logo:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.9), 
+              0 0 28px rgba(14, 165, 233, 0.7);
+}
+/* Glow effect for hoverable text */
+.glow-text {
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.glow-text:hover {
+  color: #38bdf8;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.9),
+               0 0 18px rgba(14, 165, 233, 0.7);
+}
+
+.brand-logo {
+  animation: softPulse 3s ease-in-out infinite;
+}
+
+@keyframes softPulse {
+  0% { box-shadow: 0 0 6px rgba(56, 189, 248, 0.2); }
+  50% { box-shadow: 0 0 14px rgba(56, 189, 248, 0.55); }
+  100% { box-shadow: 0 0 6px rgba(56, 189, 248, 0.2); }
+}
+
+
+
+      /* Responsive */
+      @media (min-width: 720px) {
+        .shell {
+          padding-inline: 2rem;
+        }
+
+        .nav-links {
+          display: flex;
+        }
+
+        .hero {
+          grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr);
+          align-items: center;
+        }
+
+        .grid-3 {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .steps {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .pricing-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .faq-list {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .contact {
+          grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-title {
+          font-size: 2rem;
+        }
+
+        .hero-card-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- NAVBAR -->
+      <div class="top-bar-wrap">
+        <header class="top-bar">
+         <div class="brand">
+  <img src="logo.png" class="brand-logo" alt="StudySync Logo">
+  <div>
+    <div class="brand-text-main">StudySync</div>
+    <div class="brand-text-sub">College Project</div>
+  </div>
+</div>
+
+          <nav class="nav">
+            <div class="nav-links">
+              <a href="#features" class="nav-link glow-text">Features</a>
+
+              <a href="#how-it-works" class="nav-link">How it works</a>
+              <a href="#pomodoro" class="nav-link">Pomodoro</a>
+              <a href="#pricing" class="nav-link">Pricing</a>
+              <a href="#faq" class="nav-link">FAQ</a>
+            </div>
+
+            <a href="#contact" class="nav-cta">
+              Get started
+              <span>↗</span>
+            </a>
+          </nav>
+        </header>
+      </div>
+<a href="dashboardpro.html" class="nav-cta">Dashboard ↗</a>
+
+      <!-- MAIN -->
+      <main class="shell">
+        <!-- HERO -->
+        <section class="hero" id="top">
+          <div class="hero-main">
+            <div class="hero-tag">
+              <div class="hero-dot"></div>
+              <span class="hero-tag-text"
+                >Built for students • College project prototype</span
+              >
+            </div>
+
+            <h1 class="hero-title">
+              Stay on top of your studies with
+              <span>StudySync.</span>
+            </h1>
+
+            <p class="hero-subtitle">
+              StudySync is a simple study organizer that helps students track
+              assignments, exam dates, and daily tasks in one clean dashboard—so
+              you never miss a deadline again.
+            </p>
+
+            <div class="hero-actions">
+              <a href="#pricing" class="btn btn-primary">
+                Start free
+                <span>→</span>
+              </a>
+              <a href="#features" class="btn btn-ghost"> View features </a>
+            </div>
+
+            <div class="hero-metadata">
+              <div class="pill">
+                <span class="pill-dot"></span>
+                Prototype ready
+              </div>
+              <div class="pill">Designed for mobile & desktop</div>
+              <div class="pill">Perfect for college workflow</div>
+            </div>
+          </div>
+
+          <!-- HERO MOCKUP -->
+          <aside class="hero-card" aria-label="StudySync app snapshot">
+            <div class="hero-card-badge">
+              <span>⚡</span> Never miss a deadline
+            </div>
+
+            <div class="hero-card-header">
+              <div>
+                <div class="hero-card-title">Today’s Dashboard</div>
+                <div class="hero-card-subtitle">
+                  See your tasks, exams, and priorities for the day at a glance.
+                </div>
+              </div>
+              <div class="hero-card-tag">Student View</div>
+            </div>
+
+            <div class="hero-card-grid">
+              <div class="hero-metric">
+                <div class="hero-metric-label">Tasks today</div>
+                <div class="hero-metric-value">5</div>
+              </div>
+              <div class="hero-metric">
+                <div class="hero-metric-label">Upcoming exams</div>
+                <div class="hero-metric-value">3</div>
+              </div>
+              <div class="hero-metric">
+                <div class="hero-metric-label">Focus time</div>
+                <div class="hero-metric-value">2h 30m</div>
+              </div>
+            </div>
+
+            <div class="hero-card-footer">
+              <div class="stack-chips">
+                <span>Tasks</span>
+                <span>Calendar</span>
+                <span>Reminders</span>
+              </div>
+              <div class="hero-card-note">
+                Interface concept for demo purposes in this college project.
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <!-- PROBLEM / SOLUTION -->
+        <section id="problem">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Problem → Solution</div>
+              <h2 class="section-title">
+                Students are busy. Chaos is normal. It doesn’t have to be.
+              </h2>
+            </div>
+            <p class="section-subtext">
+              StudySync focuses on a single goal: make it easy for students to
+              see what to do next without feeling overwhelmed.
+            </p>
+          </div>
+
+          <div class="problem-solution">
+            <article class="card">
+              <div class="card-label">The problem</div>
+              <h3 class="card-title">
+                Studying is scattered across apps, notes, and sticky papers.
+              </h3>
+              <p class="card-body">
+                Most students juggle multiple subjects, deadlines, and exams at
+                once. Information lives in WhatsApp groups, screenshots,
+                notebooks, and random reminders—making it easy to forget
+                something important.
+              </p>
+              <ul class="problem-list">
+                <li>Missed assignment deadlines and internal submissions</li>
+                <li>Last-minute exam pressure and all-nighters</li>
+                <li>No single place to see what’s due next</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <div class="card-label">The solution</div>
+              <h3 class="card-title">
+                StudySync gives you one clean place to manage your study life.
+              </h3>
+              <p class="card-body">
+                With StudySync, tasks, exams, and reminders sit in one simple
+                interface. Add your subjects, create tasks, and let the app keep
+                track of what’s coming—even when you’re busy.
+              </p>
+              <ul class="problem-list">
+                <li>Organized task list grouped by subject</li>
+                <li>Calendar view for exams and major deadlines</li>
+                <li>Gentle reminders before due dates</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section id="features">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Core features</div>
+              <h2 class="section-title">
+                Everything you need to stay organized as a student.
+              </h2>
+            </div>
+            <p class="section-subtext">
+              StudySync focuses on a few powerful features instead of trying to
+              do everything. That keeps the interface clean and easy to use.
+            </p>
+          </div>
+
+          <div class="grid-3">
+            <article class="card">
+              <div class="feature-icon">✓</div>
+              <h3 class="card-title">Smart task manager</h3>
+              <p class="card-body">
+                Create tasks with due dates, subjects, and priorities. Quickly
+                see what’s due today, this week, or later so you can plan your
+                day.
+              </p>
+              <div class="card-meta">
+                <span>Keep work visible.</span>
+                <span class="badge-soft">Tasks in one place</span>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="feature-icon">📅</div>
+              <h3 class="card-title">Exam & deadline calendar</h3>
+              <p class="card-body">
+                View all your important dates in a visual calendar. Spot busy
+                weeks early and avoid surprise deadlines.
+              </p>
+              <div class="card-meta">
+                <span>Plan ahead.</span>
+                <span class="badge-soft">Visual overview</span>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="feature-icon">🔔</div>
+              <h3 class="card-title">Reminders that actually help</h3>
+              <p class="card-body">
+                Set reminders a few days before due dates so you can start early
+                instead of rushing the night before.
+              </p>
+              <div class="card-meta">
+                <span>No more last-minute panic.</span>
+                <span class="badge-soft">Gentle nudges</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+             <!-- HOW IT WORKS -->
+      <section id="how-it-works">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">How it works</div>
+            <h2 class="section-title">From sign-up to study routine in three simple steps.</h2>
+          </div>
+          <p class="section-subtext">
+            The flow is designed to be fast for first-time users, which is important for a tool
+            built for busy students.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step card">
+            <div class="step-number">1</div>
+            <div>
+              <div class="step-content-title">Sign up as a student</div>
+              <div class="step-content-body">
+                Create a basic account with your name, email, and semester. No complex onboarding,
+                just enough to get started quickly.
+              </div>
+            </div>
+          </div>
+
+          <div class="step card">
+            <div class="step-number">2</div>
+            <div>
+              <div class="step-content-title">Add subjects & tasks</div>
+              <div class="step-content-body">
+                Add your subjects, upcoming exams, and assignment deadlines. StudySync organizes
+                them by course and date.
+              </div>
+            </div>
+          </div>
+
+          <div class="step card">
+            <div class="step-number">3</div>
+            <div>
+              <div class="step-content-title">Check your dashboard daily</div>
+              <div class="step-content-body">
+                Start your day by checking what’s due today and this week, then focus using the
+                simplified task view.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- POMODORO TIMER -->
+      <section id="pomodoro">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">Focus mode</div>
+            <h2 class="section-title">Use the Pomodoro timer to stay focused.</h2>
+          </div>
+          <p class="section-subtext">
+            The Pomodoro technique breaks your study time into focused intervals with short breaks.
+            This built-in timer helps you apply it directly from the StudySync page.
+          </p>
+        </div>
+
+        <article class="card pomodoro-card">
+          <div class="pomodoro-header">
+            <div>
+              <h3 class="card-title">
+  <span class="pomo-icon">🍅</span>
+  Pomodoro study session
+</h3>
+
+              <p class="card-body" style="margin-bottom: 0.4rem;">
+                Default timings: <strong>25 min focus</strong> and <strong>5 min break</strong>. Start
+                a session, stay focused until the timer ends, then take a short break.
+              </p>
+            </div>
+            <div class="pomodoro-mode-toggle">
+              <button type="button" class="btn btn-ghost pomodoro-mode-btn active" data-mode="focus">
+                Focus
+              </button>
+              <button type="button" class="btn btn-ghost pomodoro-mode-btn" data-mode="break">
+                Break
+              </button>
+            </div>
+          </div>
+
+          <div class="pomodoro-timer">
+            <div class="pomodoro-display">
+              <span id="pomo-minutes">25</span>
+              <span class="pomodoro-separator">:</span>
+              <span id="pomo-seconds">00</span>
+            </div>
+            <div id="pomo-status" class="pomodoro-status">Ready to start a focus session</div>
+          </div>
+
+          <div class="pomodoro-controls">
+            <button type="button" class="btn btn-primary" id="pomo-start">
+              Start
+            </button>
+            <button type="button" class="btn btn-ghost" id="pomo-pause">
+              Pause
+            </button>
+            <button type="button" class="btn btn-ghost" id="pomo-reset">
+              Reset
+            </button>
+          </div>
+
+          <p class="pomodoro-helper">
+            In viva, you can explain that this timer is implemented using JavaScript on the client side,
+            without any backend. It shows how small interactive tools can be integrated into a landing page.
+          </p>
+        </article>
+      </section>
+
+      <!-- PRICING -->
+      <section id="pricing">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">Pricing</div>
+            <h2 class="section-title">Free for students, designed as a prototype.</h2>
+          </div>
+          <p class="section-subtext">
+            For this college project, StudySync is presented as a free web-based prototype, with a
+            conceptual paid plan for future expansion.
+          </p>
+        </div>
+
+        <div class="pricing-grid">
+          <article class="card">
+            <div class="card-label">Current version</div>
+            <h3 class="card-title">Student Free Plan</h3>
+            <div class="price">₹0 <span>/ month</span></div>
+            <ul class="price-list">
+              <li>Unlimited subjects</li>
+              <li>Unlimited tasks & deadlines</li>
+              <li>Calendar & dashboard views</li>
+              <li>Basic reminder concept</li>
+            </ul>
+            <button class="btn btn-primary" type="button">
+              Use prototype
+              <span>→</span>
+            </button>
+          </article>
+
+          <article class="card">
+            <div class="card-label">Future idea</div>
+            <h3 class="card-title">StudySync Pro (Concept)</h3>
+            <div class="price">₹199 <span>/ month (idea only)</span></div>
+            <ul class="price-list">
+              <li>Collaboration with classmates</li>
+              <li>Sync across devices</li>
+              <li>Analytics on study habits</li>
+              <li>Export schedule to calendar apps</li>
+            </ul>
+            <p class="card-body" style="margin-bottom:0;">
+              This section is included to show how the product could be extended beyond a college
+              project into a real SaaS product.
+            </p>
+          </article>
+        </div>
+      </section>
+
+        <section id="testimonials">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Feedback</div>
+              <h2 class="section-title">
+                What students could say about StudySync.
+              </h2>
+            </div>
+            <p class="section-subtext">
+              These testimonials are mock examples for demonstration in the
+              project demo and viva.
+            </p>
+          </div>
+
+          <div class="grid-3">
+            <article class="card">
+              <p class="card-body">
+                “StudySync made it so much easier to keep track of all my
+                internal submission dates. I no longer realize an assignment is
+                due on the same morning.”
+              </p>
+              <div class="card-meta">
+                <div>
+                  <div class="testimonial-name">Anjali Sharma</div>
+                  <div class="testimonial-role">B.Tech CSE, 3rd Year</div>
+                </div>
+                <span class="badge-soft">More control</span>
+              </div>
+            </article>
+
+            <article class="card">
+              <p class="card-body">
+                “Instead of checking multiple WhatsApp groups, I just look at
+                one dashboard and I know exactly what to work on next.”
+              </p>
+              <div class="card-meta">
+                <div>
+                  <div class="testimonial-name">Rohit Verma</div>
+                  <div class="testimonial-role">BCA, 2nd Year</div>
+                </div>
+                <span class="badge-soft">Less chaos</span>
+              </div>
+            </article>
+
+            <article class="card">
+              <p class="card-body">
+                “Even as a simple prototype, the UI feels clean and
+                student-friendly. It’s easy to imagine using this daily during
+                exam season.”
+              </p>
+              <div class="card-meta">
+                <div>
+                  <div class="testimonial-name">Sneha Patel</div>
+                  <div class="testimonial-role">MBA, 1st Year</div>
+                </div>
+                <span class="badge-soft">Friendly UI</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">FAQ</div>
+              <h2 class="section-title">
+                Common questions about the StudySync prototype.
+              </h2>
+            </div>
+            <p class="section-subtext">
+              These questions help explain the scope and limitations of the
+              project during your presentation.
+            </p>
+          </div>
+
+          <div class="faq-list">
+            <div class="faq-item">
+              <div class="faq-q">Is StudySync a fully functional app?</div>
+              <div class="faq-a">
+                In this college project version, StudySync is a front-end
+                prototype focused on user interface and user experience. It can
+                be connected to a backend in future work.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-q">Will it work on mobile phones?</div>
+              <div class="faq-a">
+                Yes. The layout is responsive and adapts to mobile, tablet, and
+                desktop screens, which is important since most students use
+                their phones for quick checks.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-q">How does this help in real student life?</div>
+              <div class="faq-a">
+                It centralizes tasks, deadlines, and exams into one dashboard.
+                Even as a concept, it shows how a focused tool can reduce
+                confusion and last-minute stress.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-q">
+                Can this be extended as a major project later?
+              </div>
+              <div class="faq-a">
+                Definitely. This landing page and UI can be expanded with
+                authentication, database storage, notifications, and
+                collaboration features for a full major project.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Contact</div>
+              <h2 class="section-title">
+                Want to know more about this project?
+              </h2>
+            </div>
+            <p class="section-subtext">
+              Use this contact section in your viva to show how a real product
+              would collect queries or feedback from users.
+            </p>
+          </div>
+
+          <div class="contact">
+            <div class="contact-card">
+              <form
+                class="contact-grid"
+                onsubmit="event.preventDefault(); alert('Demo only – in a real app this would send an email or save to a database.');"
+              >
+                <div class="input-group">
+                  <label class="input-label" for="name">Name</label>
+                  <input
+                    class="input-field"
+                    type="text"
+                    id="name"
+                    placeholder="Your name"
+                    required
+                  />
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="email">Email</label>
+                  <input
+                    class="input-field"
+                    type="email"
+                    id="email"
+                    placeholder="you@example.com"
+                    required
+                  />
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="message">Message</label>
+                  <textarea
+                    class="input-textarea"
+                    id="message"
+                    rows="4"
+                    placeholder="Share your feedback or questions about StudySync."
+                    required
+                  ></textarea>
+                  <p class="input-helper">
+                    Form submission is simulated for this college project.
+                  </p>
+                </div>
+                <div class="contact-footer">
+                  <button type="submit" class="btn btn-primary">
+                    Send message
+                    <span>↗</span>
+                  </button>
+                  <p>
+                    Prefer email? Reach out at
+                    <a href="mailto:you@example.com">you@example.com</a>
+                    <!-- replace with your real email -->
+                  </p>
+                </div>
+              </form>
+            </div>
+
+            <article class="card">
+              <div class="card-label">For viva / presentation</div>
+              <h3 class="card-title">How to explain this section</h3>
+              <p class="card-body">
+                In your viva, you can explain that this contact form represents
+                how a real user could interact with the system. Right now it
+                triggers a demo alert, but it can be connected to email or
+                backend logic in a future version.
+              </p>
+              <div class="card-meta">
+                <span>Shows real-world thinking.</span>
+                <span>Prototype → product.</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- FINAL CTA -->
+        <section id="cta">
+          <div class="cta">
+            <h2>Ready to organize your study</h2>
+            <p>
+              Use this tool to organize your study and boost your learning by
+              2X.
+            </p>
+            <a href="#top" class="btn btn-primary">
+              Back to top
+              <span>↑</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+          <span>
+            © <span id="year"></span> StudySync • College project by
+            <strong>Prashant Priaynshu Naman Parveen</strong>,
+            <strong>CSE 2nd Year</strong>, <strong>GBPIET Pauri</strong>.
+          </span>
+          <div class="footer-links">
+            <a href="#top">Top</a>
+            <span>•</span>
+            <a href="#features">Features</a>
+            <span>•</span>
+            <a href="#contact">Contact</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Pomodoro logic
+    const FOCUS_DURATION = 25 * 60; // 25 minutes in seconds
+    const BREAK_DURATION = 5 * 60;  // 5 minutes in seconds
+
+    let currentMode = "focus";      // "focus" or "break"
+    let remainingSeconds = FOCUS_DURATION;
+    let intervalId = null;
+
+    const minutesEl = document.getElementById('pomo-minutes');
+    const secondsEl = document.getElementById('pomo-seconds');
+    const statusEl  = document.getElementById('pomo-status');
+
+    const startBtn  = document.getElementById('pomo-start');
+    const pauseBtn  = document.getElementById('pomo-pause');
+    const resetBtn  = document.getElementById('pomo-reset');
+    const modeBtns  = document.querySelectorAll('.pomodoro-mode-btn');
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      minutesEl.textContent = String(m).padStart(2, '0');
+      secondsEl.textContent = String(s).padStart(2, '0');
+    }
+
+    function updateStatus(text) {
+      if (statusEl) {
+        statusEl.textContent = text;
+      }
+    }
+
+    function getDefaultDuration(mode) {
+      return mode === 'break' ? BREAK_DURATION : FOCUS_DURATION;
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      clearInterval(intervalId);
+      intervalId = null;
+      remainingSeconds = getDefaultDuration(mode);
+      formatTime(remainingSeconds);
+
+      modeBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+
+      if (mode === 'focus') {
+        updateStatus('Ready to start a focus session');
+      } else {
+        updateStatus('Ready to start a break');
+      }
+    }
+
+    function tick() {
+      if (remainingSeconds > 0) {
+        remainingSeconds--;
+        formatTime(remainingSeconds);
+      } else {
+        clearInterval(intervalId);
+        intervalId = null;
+        if (currentMode === 'focus') {
+          updateStatus('Focus session complete! Switch to a break.');
+        } else {
+          updateStatus('Break finished! Switch back to focus.');
+        }
+        // Optional: small alert when a session ends
+        alert('Time is up for this ' + currentMode + ' session!');
+      }
+    }
+
+    function startTimer() {
+      if (intervalId !== null) return; // already running
+      intervalId = setInterval(tick, 1000);
+      if (currentMode === 'focus') {
+        updateStatus('Focus session running… stay concentrated!');
+      } else {
+        updateStatus('Break running… relax for a bit!');
+      }
+    }
+
+    function pauseTimer() {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+        intervalId = null;
+        updateStatus('Timer paused.');
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(intervalId);
+      intervalId = null;
+      remainingSeconds = getDefaultDuration(currentMode);
+      formatTime(remainingSeconds);
+      if (currentMode === 'focus') {
+        updateStatus('Focus timer reset.');
+      } else {
+        updateStatus('Break timer reset.');
+      }
+    }
+
+    // Initial display
+    formatTime(remainingSeconds);
+
+    // Event listeners
+    startBtn && startBtn.addEventListener('click', startTimer);
+    pauseBtn && pauseBtn.addEventListener('click', pauseTimer);
+    resetBtn && resetBtn.addEventListener('click', resetTimer);
+
+    modeBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        const mode = this.dataset.mode;
+        setMode(mode);
+      });
+    });
+  });
+</script>
+</body>
+</html>
+
+  </body>
+</html>
